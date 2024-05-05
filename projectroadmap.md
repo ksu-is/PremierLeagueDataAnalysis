@@ -6,8 +6,8 @@
 
 ## Sprint 2
 - [x] Identify similar programs for insperation to utilize in project
-- [ ] Begin Programming
+- [x] Begin Programming
 
 ## Sprint 3
-- [ ] Finalize Programming
-- [ ] Debug and Test Run Program
+- [x] Finalize Programming
+- [x] Debug and Test Run Program

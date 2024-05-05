@@ -1,31 +1,48 @@
+import tkinter as tk
+from tkinter import ttk
 import requests
 from bs4 import BeautifulSoup
 
 def get_top_scorers():
-    url = "https://www.premierleague.com/stats/top/players/goals"
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"}
+    url = "https://native-stats.org/competition/PL"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
+    }
 
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.content, "html.praser")
-        players = soup.find_all("tr", {"class": "top-player"})
-        top_players = []
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        soup = BeautifulSoup(response.content, "html.parser")
+        players = soup.find_all("tr", {"class": "js-row"})
+        top_scorers = []
         for player in players:
-            player_name = player.find("a", {"class": "playerName"}).text.strip()
-            goals = player.find("span", {"class": "allStatContainer statgoals"}).text.strip()
+            player_name = player.find("a", {"class": "js-link"}).text.strip()
+            goals = player.find("td", {"class": "jsx-3306694010 stats-value"}).text.strip()
+            top_scorers.append(f"{player_name} - {goals} goals")
         return top_scorers
-    else:
-        print("Failed to fetch data.")
+    except requests.RequestException as e:
+        print("Failed to fetch data:", e)
+        return None
+    except Exception as e:
+        print("An error occurred:", e)
         return None
 
-def display_top_scorers(top_scorers):
-    if top_scorers:
-        print("Top Scorers in Premier League:")
+def show_top_scorers():
+    top_scorers = get_top_scorers()
+    if top_scorers is not None:
+        # Create a new window
+        window = tk.Tk()
+        window.title("Premier League Top Scorers")
+        
+        # Create a listbox to display top scorers
+        listbox = tk.Listbox(window, width=50, height=15)
         for idx, player in enumerate(top_scorers, start=1):
-            print(f"{idx}, {player['Player']} - {player['Goals']} goals")
+            listbox.insert(tk.END, f"{idx}. {player}")
+        listbox.pack(padx=10, pady=10)
+        
+        window.mainloop()
     else:
-        print("No data available.")
+        print("Failed to retrieve top scorers data.")
 
 if __name__ == "__main__":
-    top_scorers = get_top_scorers()
-    display_top_scorers(top_scorers)
+    show_top_scorers()
