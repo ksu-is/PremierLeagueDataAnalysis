@@ -11,7 +11,7 @@ def get_top_scorers():
 
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for HTTP errors
+        response.raise_for_status()  
         soup = BeautifulSoup(response.content, "html.parser")
         players = soup.find_all("tr", {"class": "js-row"})
         top_scorers = []
