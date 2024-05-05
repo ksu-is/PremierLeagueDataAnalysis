@@ -2,12 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 
 def get_top_scorers():
-    url = "https://www.premierleague.com/stats/top/players/goals?se=-1"
+    url = "https://www.premierleague.com/stats/top/players/goals"
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"}
 
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        soup = BeatifulSoup(response.content, "html.praser")
+        soup = BeautifulSoup(response.content, "html.praser")
         players = soup.find_all("tr", {"class": "top-player"})
         top_players = []
         for player in players:
